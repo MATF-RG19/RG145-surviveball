@@ -1,0 +1,10 @@
+const int WINDOW_HEIGHT = 600;
+const int WINDOW_WIDTH = 600;
+const int WINDOW_POSITION_X = 100;
+const int WINDOW_POSITION_Y = 100;
+const int KEY_ESC = 27;
+const int KEY_LEFT = 65;
+const int KEY_RIGHT = 68;
+const int KEY_JUMP = 32;
+const int KEY_TURBO = 87;
+const int MOVEMENT = 2;
