@@ -1,5 +1,1 @@
-﻿  Main.cpp
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(31,36): warning C4305: 'argument': truncation from 'double' to 'GLclampf'
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(77,37): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(78,34): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-  SurviveBall.vcxproj -> C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\Debug\SurviveBall.exe
+﻿  SurviveBall.vcxproj -> C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\Debug\SurviveBall.exe
