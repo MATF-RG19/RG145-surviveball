@@ -8,6 +8,7 @@ using namespace std;
 static int timer_active;
 
 static void on_keyboard(unsigned char key, int x, int y);
+static void on_release(unsigned char key, int x, int y);
 static void on_timer(int value);
 static void on_reshape(int width, int height);
 static void on_display(void);
@@ -24,6 +25,7 @@ int main(int argc, char** argv) {
     glutCreateWindow("SurviveBall");
 
     glutKeyboardFunc(on_keyboard);
+    glutKeyboardUpFunc(on_release);
     glutReshapeFunc(on_reshape);
     glutDisplayFunc(on_display);
 
@@ -64,6 +66,16 @@ static void on_keyboard(unsigned char key, int x, int y) {
             exit(0);
             break;
 
+        case ARROW_UP:
+            CAMERA_Y += 0.1;
+            cout << CAMERA_Y << "\n";
+            break;
+
+        case ARROW_DOWN:
+            CAMERA_Y -= 0.1;
+            cout << CAMERA_Y << "\n";
+            break;
+
         case KEY_START:
             if (!animation_ongoing) {
                 animation_ongoing = 1;
@@ -72,20 +84,29 @@ static void on_keyboard(unsigned char key, int x, int y) {
             break;
 
         case KEY_LEFT:
-            SHIFT_X += 0.5;
+            ATTEMPT_LEFT = 1;
             break;
 
         case KEY_RIGHT:
-            SHIFT_X -= 0.5;
+            ATTEMPT_RIGHT = 1;
             break;
 
         case KEY_JUMP:
-            if (SHIFT_Y == 0) {
-                JUMP_TIMEOUT = 20;
-            }
-            
             break;
 
+    }
+}
+
+static void on_release(unsigned char key, int x, int y) {
+    switch (key) {
+    case 'a':
+    case 'A':
+        ATTEMPT_LEFT = 0;
+        break;
+    case 'd':
+    case 'D':
+        ATTEMPT_RIGHT = 0;
+        break;
     }
 }
 
@@ -93,9 +114,22 @@ static void on_timer(int value){
     if (value != 0)
     return;
 
-    if (JUMP_TIMEOUT >= 0) {
-        SHIFT_Y = sin(JUMP_TIMEOUT*PI / 90);
-        JUMP_TIMEOUT -= 1;
+    Z_PLANE1 -= 0.5;
+    Z_PLANE2 -= 0.5;
+
+    if (Z_PLANE1 + 50 <= 0) {
+        Z_PLANE1 = 150;
+    }
+    if (Z_PLANE2 + 50 <= 0) {
+        Z_PLANE2 = 150;
+    }
+
+    if (ATTEMPT_LEFT && BALL_X < 2.2) {
+        BALL_X += 0.1;
+    }
+
+    if (ATTEMPT_RIGHT && BALL_X > -2.2) {
+        BALL_X -= 0.1;
     }
 
     glutPostRedisplay();
@@ -118,8 +152,15 @@ static void on_reshape(int width, int height) {
 static void draw_plane() {
     glPushMatrix();
         glColor3f(0.29, 0.447, 0.584);
-        glTranslatef(2, -0.100, 2);
-        glScalef(5, 1, 100);
+        glTranslatef(0, -Y_PLANE1, Z_PLANE1);
+        glScalef(X_PLANE1, Y_PLANE1, LENGTH);
+        glutSolidCube(1);
+    glPopMatrix();
+
+    glPushMatrix();
+        glColor3f(0.29, 0.447, 0.584); /*sa interneta boja*/
+        glTranslatef(0, -Y_PLANE2, Z_PLANE2);
+        glScalef(X_PLANE2, Y_PLANE2, LENGTH);
         glutSolidCube(1);
     glPopMatrix();
 }
@@ -128,7 +169,7 @@ static void draw_ball() {
     glPushMatrix();
         glColor3f(1, 1, 1);
         glTranslatef(BALL_X, BALL_Y, BALL_Z);
-        glutSolidSphere(0.3, 100, 100);
+        glutSolidSphere(0.6, 100, 100);
     glPopMatrix();
 }
 
@@ -138,13 +179,13 @@ static void on_display(void) {
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(2 + SHIFT_X, 2, -5,
-              2 + SHIFT_X, 0, 2,
+    gluLookAt(BALL_X, 3 + CAMERA_Y, -1,
+              BALL_X, 1.5 + CAMERA_Y, 2,
               0, 1, 0);
     draw_plane();
 
     glPushMatrix();
-        glTranslatef(SHIFT_X, SHIFT_Y, 0);
+        glTranslatef(BALL_X, BALL_Y, 0);
         draw_ball();
     glPopMatrix();
 

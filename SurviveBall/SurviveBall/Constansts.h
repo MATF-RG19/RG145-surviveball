@@ -12,20 +12,30 @@ const unsigned char KEY_JUMP = 32;
 const unsigned char KEY_TURBO = 87;
 const unsigned char KEY_START = 'g';
 
+const unsigned char ARROW_UP = 'u';
+const unsigned char ARROW_DOWN = 'j';
+
+
 const int MOVEMENT = 2;
 
-double BALL_X = 2;
-double BALL_Y = 1;
-double BALL_Z = -2;
+double BALL_X = 0;
+double BALL_Y = 0.05;
+double BALL_Z = 5;
 
-double PLANE_SCALE_X = 10;
-double PLANE_SCALE_Y = 1;
-double PLANE_SCALE_Z = 30;
+double X_PLANE1 = 10;
+double Y_PLANE1 = 1;
+double Z_PLANE1 = 50;
+double X_PLANE2 = 10;
+double Y_PLANE2 = 1;
+double Z_PLANE2 = 150;
 
-double SHIFT_X = 0;
-double SHIFT_Y = 0;
+double LENGTH = 100;
+
+double CAMERA_Y = 0;
 
 float animation_parameter = 0;
 float animation_ongoing = 0;
 
-float JUMP_TIMEOUT = 0;
+
+int ATTEMPT_LEFT = 0;
+int ATTEMPT_RIGHT = 0;
