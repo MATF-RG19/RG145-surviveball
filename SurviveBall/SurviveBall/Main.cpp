@@ -2,16 +2,21 @@
 #include <GL/glut.h>
 #include <math.h>
 #include <iostream>
+#include <time.h>
 #include "Constansts.h"
-using namespace std;
+#include "Variables.h"
+#include <vector>
 
 static int timer_active;
 
-static void on_keyboard(unsigned char key, int x, int y);
-static void on_release(unsigned char key, int x, int y);
-static void on_timer(int value);
-static void on_reshape(int width, int height);
+static void on_keyboard(unsigned char, int, int);
+static void on_release(unsigned char, int, int);
+static void on_timer(int);
+static void on_reshape(int, int);
 static void on_display(void);
+static void make_obstacles(const int);
+static void draw_obstacles(const int);
+static void colision_detection();
 
 static void draw_plane();
 static void draw_ball();
@@ -67,16 +72,19 @@ static void on_keyboard(unsigned char key, int x, int y) {
             break;
 
         case ARROW_UP:
-            CAMERA_Y += 0.1;
-            cout << CAMERA_Y << "\n";
+            CAMERA_Y += 0.2;
             break;
 
         case ARROW_DOWN:
-            CAMERA_Y -= 0.1;
-            cout << CAMERA_Y << "\n";
+            CAMERA_Y -= 0.2;
+            break;
+
+        case 's':
+            animation_ongoing = 0;
             break;
 
         case KEY_START:
+            std::cout << ball_coordinates << "\n";
             if (!animation_ongoing) {
                 animation_ongoing = 1;
                 glutTimerFunc(20, on_timer, 0);
@@ -114,22 +122,38 @@ static void on_timer(int value){
     if (value != 0)
     return;
 
-    Z_PLANE1 -= 0.5;
-    Z_PLANE2 -= 0.5;
+    plane1_coordinates.z -= 0.5;
+    plane2_coordinates.z -= 0.5;
+    colision_detection();
 
-    if (Z_PLANE1 + 50 <= 0) {
-        Z_PLANE1 = 150;
-    }
-    if (Z_PLANE2 + 50 <= 0) {
-        Z_PLANE2 = 150;
+    for (int i = 0; i < obstacles_plane1.size(); i++) {
+        obstacles_plane1[i].z -= 0.5;
     }
 
-    if (ATTEMPT_LEFT && BALL_X < 2.2) {
-        BALL_X += 0.1;
+    for (int i = 0; i < obstacles_plane2.size(); i++) {
+        obstacles_plane2[i].z -= 0.5;
     }
 
-    if (ATTEMPT_RIGHT && BALL_X > -2.2) {
-        BALL_X -= 0.1;
+    if (plane1_coordinates.z + 50 <= 0) {
+        obstacles_plane1.clear();
+        plane1_coordinates.z = 150;
+        make_obstacles(1);
+        draw_obstacles(1);
+    }
+
+    if (plane2_coordinates.z + 50 <= 0) {
+        obstacles_plane2.clear();
+        plane2_coordinates.z = 150;
+        make_obstacles(2);
+        draw_obstacles(2);
+    }
+
+    if (ATTEMPT_LEFT && ball_coordinates.x < 4) {
+        ball_coordinates.x += 0.1;
+    }
+
+    if (ATTEMPT_RIGHT && ball_coordinates.x > -4) {
+        ball_coordinates.x -= 0.1;
     }
 
     glutPostRedisplay();
@@ -151,16 +175,16 @@ static void on_reshape(int width, int height) {
 
 static void draw_plane() {
     glPushMatrix();
-        glColor3f(0.29, 0.447, 0.584);
-        glTranslatef(0, -Y_PLANE1, Z_PLANE1);
-        glScalef(X_PLANE1, Y_PLANE1, LENGTH);
+        glColor3f(0.35, 0.50, 0.73);
+        glTranslatef(0, -plane1_coordinates.y, plane1_coordinates.z);
+        glScalef(plane1_coordinates.x, plane1_coordinates.y, LENGTH);
         glutSolidCube(1);
     glPopMatrix();
 
     glPushMatrix();
-        glColor3f(0.29, 0.447, 0.584); /*sa interneta boja*/
-        glTranslatef(0, -Y_PLANE2, Z_PLANE2);
-        glScalef(X_PLANE2, Y_PLANE2, LENGTH);
+        glColor3f(0.29, 0.447, 0.584); 
+        glTranslatef(0, -plane2_coordinates.y, plane2_coordinates.z);
+        glScalef(plane2_coordinates.x, plane2_coordinates.y, LENGTH);
         glutSolidCube(1);
     glPopMatrix();
 }
@@ -168,8 +192,8 @@ static void draw_plane() {
 static void draw_ball() {
     glPushMatrix();
         glColor3f(1, 1, 1);
-        glTranslatef(BALL_X, BALL_Y, BALL_Z);
-        glutSolidSphere(0.6, 100, 100);
+        glTranslatef(ball_coordinates.x, ball_coordinates.y, ball_coordinates.z);
+        glutSolidSphere(0.5, 100, 100);
     glPopMatrix();
 }
 
@@ -179,17 +203,115 @@ static void on_display(void) {
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(BALL_X, 3 + CAMERA_Y, -1,
-              BALL_X, 1.5 + CAMERA_Y, 2,
+    gluLookAt(ball_coordinates.x, 3 + CAMERA_Y, -1,
+              ball_coordinates.x, 1.5 + CAMERA_Y, 2,
               0, 1, 0);
     draw_plane();
 
     glPushMatrix();
-        glTranslatef(BALL_X, BALL_Y, 0);
         draw_ball();
     glPopMatrix();
+
+    draw_obstacles(1);
+    draw_obstacles(2);
 
     glutSwapBuffers();
 }
 
+static std::vector<double> get_obstacle_locations() {
+    
+    std::vector<double> positions;
 
+    for (int i = 0; i < NUMBER_OF_POINTS; i++) {
+        int index = (int)rand() % 100;
+        positions.push_back(possible_positions[index]);
+    }
+
+    return positions;
+}
+
+static void make_obstacles(int tip){
+
+    for (int i = 0; i < 10; i++) {
+        int num = (int)rand() % NUMBER_OF_POINTS;
+
+        if (num == 0)
+            num = 4;
+
+        std::vector<bool> free_positions = { 1, 1, 1, 1, 1 };
+        for (int j = 0; j < num; j++) {
+            Coordinates p;
+
+            std::vector < double > positions = get_obstacle_locations();
+            int pos = (int)rand() % 5;
+            if (free_positions[pos] == 1) {
+                free_positions[pos] = 0;
+
+                p.y = 0.25;
+           
+                p.x = positions[pos];
+                if (tip == 1) {
+                    p.z = plane1_coordinates.z + 50 - i * 10;
+                    obstacles_plane1.push_back(p);
+                }
+                else {
+                    p.z = plane2_coordinates.z + 50 - i * 10;
+                    obstacles_plane2.push_back(p);
+                }
+            }
+        }
+    }
+}
+
+static void draw_obstacles(const int plane) {
+    int len = 0;
+
+    len = (plane == 1 ? obstacles_plane1.size() : obstacles_plane2.size());
+
+    for (int i = 0; i < len; i++) {
+        Coordinates coord;
+        
+        if (plane == 1)
+            coord = obstacles_plane1[i];
+        else
+            coord = obstacles_plane2[i];
+
+        glPushMatrix();
+            glColor3f(221.0 / 255, 99.0 / 255, 98.0 / 255);
+            glTranslatef(coord.x, coord.y, coord.z);
+            glScalef(1, 1, 1);
+            glutSolidCube(0.75);
+        glPopMatrix();
+    }
+}
+
+static float find_distance(Coordinates cord) {
+    Coordinates dist = ball_coordinates - cord;
+    return dist.distance();
+}
+
+static void colision_detection() {
+
+    int plane = (plane1_coordinates.z < plane2_coordinates.z ? 1 : 2);
+
+    if (plane == 1) {
+
+        for (int i = 0; i < obstacles_plane1.size(); i++) {
+            double dist = find_distance(obstacles_plane1[i]);
+
+            if (dist <= 0.5) {
+                animation_ongoing = 0;
+            }
+
+        }
+    }else {
+
+        for (int i = 0; i < obstacles_plane2.size(); i++) {
+            double dist = find_distance(obstacles_plane2[i]);
+
+            if (dist <= 0.5) {
+                animation_ongoing = 0;
+            }
+        }
+    }
+}
