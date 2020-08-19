@@ -84,7 +84,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
             break;
 
         case KEY_START:
-            std::cout << ball_coordinates << "\n";
+            //std::cout << ball_coordinates << "\n";
             if (!animation_ongoing) {
                 animation_ongoing = 1;
                 glutTimerFunc(20, on_timer, 0);
@@ -99,7 +99,9 @@ static void on_keyboard(unsigned char key, int x, int y) {
             ATTEMPT_RIGHT = 1;
             break;
 
-        case KEY_JUMP:
+        case 'w':
+        case 'W':
+            ATTEMPT_JUMP = 1;
             break;
 
     }
@@ -111,6 +113,7 @@ static void on_release(unsigned char key, int x, int y) {
     case 'A':
         ATTEMPT_LEFT = 0;
         break;
+    
     case 'd':
     case 'D':
         ATTEMPT_RIGHT = 0;
@@ -120,19 +123,8 @@ static void on_release(unsigned char key, int x, int y) {
 
 static void on_timer(int value){
     if (value != 0)
-    return;
+        return;
 
-    plane1_coordinates.z -= 0.5;
-    plane2_coordinates.z -= 0.5;
-    colision_detection();
-
-    for (int i = 0; i < obstacles_plane1.size(); i++) {
-        obstacles_plane1[i].z -= 0.5;
-    }
-
-    for (int i = 0; i < obstacles_plane2.size(); i++) {
-        obstacles_plane2[i].z -= 0.5;
-    }
 
     if (plane1_coordinates.z + 50 <= 0) {
         obstacles_plane1.clear();
@@ -148,12 +140,50 @@ static void on_timer(int value){
         draw_obstacles(2);
     }
 
+    plane1_coordinates.z -= 0.5;
+    plane2_coordinates.z -= 0.5;
+    colision_detection();
+
+
+
+    for (int i = 0; i < obstacles_plane1.size(); i++) {
+        obstacles_plane1[i].z -= (0.5 + SPEED_INCREASE);
+    }
+
+    for (int i = 0; i < obstacles_plane2.size(); i++) {
+        obstacles_plane2[i].z -= (0.5 + SPEED_INCREASE);
+    }
+
     if (ATTEMPT_LEFT && ball_coordinates.x < 4) {
         ball_coordinates.x += 0.1;
     }
 
     if (ATTEMPT_RIGHT && ball_coordinates.x > -4) {
         ball_coordinates.x -= 0.1;
+    }
+
+    if (ATTEMPT_JUMP) {
+        if (jump_counter < PI) {
+            jump_counter += JUMP_SPEED;
+            ball_coordinates.y = MAX_JUMP_HEIGHT * sin(jump_counter);
+        }
+        else {
+            jump_counter = 0;
+            ATTEMPT_JUMP = 0;
+        }
+    }
+    
+    if (SPEED_BOOSTER_ACTIVE) {
+        std::cout << SPEED_INCREASE << "\n";
+        if (SPEED_BOOST_VAR < PI) {
+            SPEED_BOOST_VAR += JUMP_SPEED;
+            SPEED_INCREASE = 2 * sin(SPEED_BOOST_VAR);
+        }
+        else {
+            SPEED_INCREASE = 0;
+            SPEED_BOOST_VAR = 0;
+            SPEED_BOOSTER_ACTIVE = 0;
+        }
     }
 
     glutPostRedisplay();
@@ -230,8 +260,13 @@ static std::vector<double> get_obstacle_locations() {
     return positions;
 }
 
-static void make_obstacles(int tip){
+static bool should_generate_reward() {
+    int index = (int)rand() % 100;
+    
+    return (possible_positions[index] > 0 ? true : false);
+}
 
+static void make_obstacles(int type){
     for (int i = 0; i < 10; i++) {
         int num = (int)rand() % NUMBER_OF_POINTS;
 
@@ -242,32 +277,72 @@ static void make_obstacles(int tip){
         for (int j = 0; j < num; j++) {
             Coordinates p;
 
-            std::vector < double > positions = get_obstacle_locations();
-            int pos = (int)rand() % 5;
+            std::vector <double> positions = get_obstacle_locations();
+
+            if (!REWARD_COUNTER) {
+                REWARD_COUNTER = 1;
+                bool have_reward = should_generate_reward();
+                if (have_reward) {
+                    free_positions[j] = 1;
+
+                    p.y = 0.25;
+                    p.x = positions[j];
+                    if (type == 1) {
+                        p.z = plane1_coordinates.z + 50 - i * 10;
+                    }
+                    else {
+                        p.z = plane2_coordinates.z + 50 - i * 10;
+                    }
+                    
+                    p.type_speed = 1;
+                    
+                    if (type == 1) {
+                        obstacles_plane1.push_back(p);
+                    }
+                    else {
+                        obstacles_plane2.push_back(p);
+                    }
+
+                    continue;
+                }
+            }
+
+            int pos = j;
             if (free_positions[pos] == 1) {
                 free_positions[pos] = 0;
 
                 p.y = 0.25;
-           
+                
                 p.x = positions[pos];
-                if (tip == 1) {
+                if (type == 1) {
                     p.z = plane1_coordinates.z + 50 - i * 10;
+                    p.type_obstacle = 1;
                     obstacles_plane1.push_back(p);
                 }
                 else {
                     p.z = plane2_coordinates.z + 50 - i * 10;
+                    p.type_obstacle = 1;
                     obstacles_plane2.push_back(p);
                 }
             }
         }
     }
+
+    REWARD_COUNTER = 0;
+}
+
+static float find_distance(Coordinates cord) {
+    Coordinates dist;
+    dist = ball_coordinates - cord;
+
+    return dist.distance();
 }
 
 static void draw_obstacles(const int plane) {
     int len = 0;
 
     len = (plane == 1 ? obstacles_plane1.size() : obstacles_plane2.size());
-
+    
     for (int i = 0; i < len; i++) {
         Coordinates coord;
         
@@ -276,19 +351,25 @@ static void draw_obstacles(const int plane) {
         else
             coord = obstacles_plane2[i];
 
-        glPushMatrix();
-            glColor3f(221.0 / 255, 99.0 / 255, 98.0 / 255);
-            glTranslatef(coord.x, coord.y, coord.z);
-            glScalef(1, 1, 1);
-            glutSolidCube(0.75);
-        glPopMatrix();
+        if (coord.type_obstacle) {
+            glPushMatrix();
+                glColor3f(221.0 / 255, 99.0 / 255, 98.0 / 255);
+                glTranslatef(coord.x, coord.y, coord.z);
+                glScalef(1, 1, 1);
+                glutSolidCube(0.75);
+            glPopMatrix();
+        }
+        else if(coord.type_speed){
+            glPushMatrix();
+                glColor3f(0, 225, 0);
+                glTranslatef(coord.x, coord.y, coord.z);
+                glScalef(1, 1, 1);
+                glutSolidCube(0.75);
+            glPopMatrix();
+        }
     }
 }
 
-static float find_distance(Coordinates cord) {
-    Coordinates dist = ball_coordinates - cord;
-    return dist.distance();
-}
 
 static void colision_detection() {
 
@@ -299,18 +380,33 @@ static void colision_detection() {
         for (int i = 0; i < obstacles_plane1.size(); i++) {
             double dist = find_distance(obstacles_plane1[i]);
 
-            if (dist <= 0.5) {
-                animation_ongoing = 0;
-            }
+            if (dist <= 0.75) {
+                
+                if (obstacles_plane1[i].type_obstacle && !SPEED_BOOSTER_ACTIVE) {
+                    animation_ongoing = 0;
+                }
 
+                if (obstacles_plane1[i].type_speed) {
+                    SPEED_BOOSTER_ACTIVE = 1;
+                }
+            }
         }
+
     }else {
 
         for (int i = 0; i < obstacles_plane2.size(); i++) {
             double dist = find_distance(obstacles_plane2[i]);
 
-            if (dist <= 0.5) {
-                animation_ongoing = 0;
+            if (dist <= 0.75) {
+
+                if (obstacles_plane2[i].type_obstacle && !SPEED_BOOSTER_ACTIVE) {
+                    animation_ongoing = 0;
+                }
+
+                if (obstacles_plane2[i].type_speed) {
+                    SPEED_BOOSTER_ACTIVE = 1;
+                }
+
             }
         }
     }
