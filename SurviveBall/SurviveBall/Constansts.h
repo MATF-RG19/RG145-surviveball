@@ -1,4 +1,5 @@
 #include <vector>
+#include <string>
 
 #define PI 3.14
 
@@ -50,6 +51,8 @@ const double DECISION_BOUNDARY = 3.5;
 
 const double LENGTH = 100;
 
-const int NUMBER_OF_POINTS = 5;
+
+
+
 
 

@@ -1,29 +1,34 @@
 ﻿  Main.cpp
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(39,36): warning C4305: 'argument': truncation from 'double' to 'GLclampf'
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(50,50): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(149,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(153,23): warning C4018: '<': signed/unsigned mismatch
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(208,35): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(209,66): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(209,25): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(210,58): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(210,36): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(215,37): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(216,66): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(216,25): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(217,58): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(217,36): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(225,78): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(225,58): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(225,38): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(338,25): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(356,62): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(357,53): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(357,44): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(357,35): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(365,53): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(365,44): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(365,35): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(380,27): warning C4018: '<': signed/unsigned mismatch
-C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(397,27): warning C4018: '<': signed/unsigned mismatch
-  SurviveBall.vcxproj -> C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\Debug\SurviveBall.exe
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Image.cpp(7,8): error C2371: 'BITMAPFILEHEADER': redefinition; different basic types
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\wingdi.h(943): message : see declaration of 'BITMAPFILEHEADER'
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Image.cpp(15,8): error C2371: 'BITMAPINFOHEADER': redefinition; different basic types
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\um\wingdi.h(824): message : see declaration of 'BITMAPINFOHEADER'
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(50,36): warning C4305: 'argument': truncation from 'double' to 'GLclampf'
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(61,50): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(180,66): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(180,42): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(232,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(236,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(310,37): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(311,66): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(311,25): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(312,58): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(312,36): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(336,37): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(337,66): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(337,25): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(338,58): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(338,36): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(346,78): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(346,58): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(346,38): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(462,25): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(480,62): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(481,53): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(481,44): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(481,35): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(489,53): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(489,44): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(489,35): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(504,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\bozam\Desktop\Projekat iz grafike\RG145-surviveball\SurviveBall\SurviveBall\Main.cpp(521,27): warning C4018: '<': signed/unsigned mismatch

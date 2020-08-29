@@ -22,6 +22,13 @@ int REWARD_COUNTER = 0;
 int SPEED_BOOSTER_ACTIVE = 0;
 double SPEED_BOOST_VAR = 0;
 double SPEED_INCREASE = 0;
+double SCORE = 0;
+std::string SCORE_TEXT = "SCORE: ";
+
 
 std::vector<Coordinates> obstacles_plane1;
 std::vector<Coordinates> obstacles_plane2;
+
+double BALL_SPEED = 0.5;
+int NUMBER_OF_POINTS = 5;
+int LOOP_COUNT = 10;

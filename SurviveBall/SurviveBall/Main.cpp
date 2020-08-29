@@ -1,13 +1,22 @@
+#pragma once
+
 #include <stdlib.h>
 #include <GL/glut.h>
 #include <math.h>
 #include <iostream>
 #include <time.h>
+#include <vector>
+#include <string>
+
 #include "Constansts.h"
 #include "Variables.h"
-#include <vector>
+#include "Image.cpp"
 
 static int timer_active;
+
+const char* FILENAME0 = "clouds.bmp";
+
+static GLuint names[1];
 
 static void on_keyboard(unsigned char, int, int);
 static void on_release(unsigned char, int, int);
@@ -17,9 +26,11 @@ static void on_display(void);
 static void make_obstacles(const int);
 static void draw_obstacles(const int);
 static void colision_detection();
+static void set_textures();
 
 static void draw_plane();
 static void draw_ball();
+
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
@@ -59,9 +70,49 @@ int main(int argc, char** argv) {
 
     glEnable(GL_COLOR_MATERIAL);
 
+    glutFullScreen();
+
     glutMainLoop();
 
     return 0;
+}
+
+static void set_textures() {
+    Image* image;
+
+    
+    glEnable(GL_TEXTURE_2D);
+
+    glTexEnvf(GL_TEXTURE_ENV,
+        GL_TEXTURE_ENV_MODE,
+        GL_REPLACE);
+    image = image_init(0, 0);
+ 
+    glGenTextures(1, names);
+
+
+ 
+    image_read(image, FILENAME0);
+
+    glBindTexture(GL_TEXTURE_2D, names[0]);
+
+    glTexParameteri(GL_TEXTURE_2D,
+        GL_TEXTURE_WRAP_S, GL_CLAMP);
+
+    glTexParameteri(GL_TEXTURE_2D,
+        GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+    glTexParameteri(GL_TEXTURE_2D,
+        GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexParameteri(GL_TEXTURE_2D,
+        GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+        image->width, image->height, 0,
+        GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 static void on_keyboard(unsigned char key, int x, int y) {
@@ -84,7 +135,6 @@ static void on_keyboard(unsigned char key, int x, int y) {
             break;
 
         case KEY_START:
-            //std::cout << ball_coordinates << "\n";
             if (!animation_ongoing) {
                 animation_ongoing = 1;
                 glutTimerFunc(20, on_timer, 0);
@@ -103,9 +153,9 @@ static void on_keyboard(unsigned char key, int x, int y) {
         case 'W':
             ATTEMPT_JUMP = 1;
             break;
-
     }
 }
+
 
 static void on_release(unsigned char key, int x, int y) {
     switch (key) {
@@ -121,11 +171,46 @@ static void on_release(unsigned char key, int x, int y) {
     }
 }
 
+
+static void score() {
+
+    glPushMatrix();
+        
+        glColor3f(0, 0, 0);
+        glRasterPos3f(ball_coordinates.x + 4, 3, ball_coordinates.z);
+
+        std::string SCORE_DISPLAY = SCORE_TEXT + std::to_string(int(SCORE));
+
+        for (auto it: SCORE_DISPLAY){
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, it);
+        }
+
+    glPopMatrix();
+}
+
+
 static void on_timer(int value){
+
+    if (plane1_coordinates.z < plane2_coordinates.z) {
+        std::cout <<"Plane1: "<<obstacles_plane1.size()<<"\n";
+    }
+    else {
+        std::cout <<"Plane2: "<<obstacles_plane2.size()<<"\n";
+    }
+
     if (value != 0)
         return;
 
+    SCORE += 0.2 + 0.2 * (int(SPEED_INCREASE));
 
+    if (int(SCORE) % 200 == 0 && SCORE > 1) {
+        BALL_SPEED += 0.002;
+        //std::cout << "Ah yes, score that can be devided by 200 "<<int(SCORE) << "\n";
+        //std::cout << "Ball speed" << BALL_SPEED << "\n\n";
+
+        NUMBER_OF_POINTS++;
+    }
+    
     if (plane1_coordinates.z + 50 <= 0) {
         obstacles_plane1.clear();
         plane1_coordinates.z = 150;
@@ -144,14 +229,12 @@ static void on_timer(int value){
     plane2_coordinates.z -= 0.5;
     colision_detection();
 
-
-
     for (int i = 0; i < obstacles_plane1.size(); i++) {
-        obstacles_plane1[i].z -= (0.5 + SPEED_INCREASE);
+        obstacles_plane1[i].z -= (BALL_SPEED + SPEED_INCREASE);
     }
 
     for (int i = 0; i < obstacles_plane2.size(); i++) {
-        obstacles_plane2[i].z -= (0.5 + SPEED_INCREASE);
+        obstacles_plane2[i].z -= (BALL_SPEED + SPEED_INCREASE);
     }
 
     if (ATTEMPT_LEFT && ball_coordinates.x < 4) {
@@ -174,9 +257,8 @@ static void on_timer(int value){
     }
     
     if (SPEED_BOOSTER_ACTIVE) {
-        std::cout << SPEED_INCREASE << "\n";
         if (SPEED_BOOST_VAR < PI) {
-            SPEED_BOOST_VAR += JUMP_SPEED;
+            SPEED_BOOST_VAR += JUMP_SPEED * 1.75;
             SPEED_INCREASE = 2 * sin(SPEED_BOOST_VAR);
         }
         else {
@@ -192,6 +274,7 @@ static void on_timer(int value){
         glutTimerFunc(20, on_timer, 0);
 }
 
+
 static void on_reshape(int width, int height) {
 
     glViewport(0, 0, width, height);
@@ -205,14 +288,52 @@ static void on_reshape(int width, int height) {
 
 static void draw_plane() {
     glPushMatrix();
-        glColor3f(0.35, 0.50, 0.73);
+        glBindTexture(GL_TEXTURE_2D, names[0]);
+        glEnable(GL_TEXTURE_2D);
+
+        glBegin(GL_POLYGON);
+        glTexCoord2f(0, 0);
+        glVertex3f(-7, 0, -30);
+
+        glTexCoord2f(1, 0);
+        glVertex3f(7, 0, -30);
+
+        glTexCoord2f(1, 1);
+        glVertex3f(7, 0, 30);
+
+        glTexCoord2f(0, 1);
+        glVertex3f(-7, 0, 30);
+        glEnd();
+        glDisable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        glColor3f(0.29, 0.447, 0.584);
         glTranslatef(0, -plane1_coordinates.y, plane1_coordinates.z);
         glScalef(plane1_coordinates.x, plane1_coordinates.y, LENGTH);
         glutSolidCube(1);
     glPopMatrix();
 
     glPushMatrix();
-        glColor3f(0.29, 0.447, 0.584); 
+        glBindTexture(GL_TEXTURE_2D, names[0]);
+        glEnable(GL_TEXTURE_2D);
+
+        glBegin(GL_POLYGON);
+        glTexCoord2f(0, 0);
+        glVertex3f(-7, 0, -30);
+
+        glTexCoord2f(1, 0);
+        glVertex3f(7, 0, -30);
+
+        glTexCoord2f(1, 1);
+        glVertex3f(7, 0, 30);
+
+        glTexCoord2f(0, 1);
+        glVertex3f(-7, 0, 30);
+        glEnd();
+        glDisable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        glColor3f(0.29, 0.447, 0.584);
         glTranslatef(0, -plane2_coordinates.y, plane2_coordinates.z);
         glScalef(plane2_coordinates.x, plane2_coordinates.y, LENGTH);
         glutSolidCube(1);
@@ -230,6 +351,8 @@ static void draw_ball() {
 static void on_display(void) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    score();
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -267,13 +390,13 @@ static bool should_generate_reward() {
 }
 
 static void make_obstacles(int type){
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < LOOP_COUNT; i++) {
         int num = (int)rand() % NUMBER_OF_POINTS;
 
         if (num == 0)
-            num = 4;
+            num = 2;
 
-        std::vector<bool> free_positions = { 1, 1, 1, 1, 1 };
+        std::vector<bool> free_positions(NUMBER_OF_POINTS, 1);
         for (int j = 0; j < num; j++) {
             Coordinates p;
 
@@ -284,22 +407,23 @@ static void make_obstacles(int type){
                 bool have_reward = should_generate_reward();
                 if (have_reward) {
                     free_positions[j] = 1;
-
-                    p.y = 0.25;
-                    p.x = positions[j];
-                    if (type == 1) {
-                        p.z = plane1_coordinates.z + 50 - i * 10;
-                    }
-                    else {
-                        p.z = plane2_coordinates.z + 50 - i * 10;
-                    }
                     
                     p.type_speed = 1;
+                    p.y = 0.25;
+                    p.x = positions[j];
                     
                     if (type == 1) {
+                        p.z = plane1_coordinates.z + 50 - i * 10;
+                        if (p.z - plane1_coordinates.z - 50 > 5)
+                            p.type_obstacle = 1;
+                        else p.type_speed = 1;
                         obstacles_plane1.push_back(p);
                     }
                     else {
+                        p.z = plane2_coordinates.z + 50 - i * 10;
+                        if (p.z - plane1_coordinates.z - 50 > 5)
+                            p.type_obstacle = 1;
+                        else p.type_speed = 1;
                         obstacles_plane2.push_back(p);
                     }
 
